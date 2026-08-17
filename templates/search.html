@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Search Properties — PropMarket{% endblock %}
+{% block content %}
+<section class="page-head"><div class="container"><div class="eyebrow">PROPERTY SEARCH</div><h1>Commercial properties</h1><p>Use the filters to narrow down the listings.</p></div></section>
+
+<div class="container results-layout">
+  <aside class="filters">
+    <form method="get">
+      <h3>Filter results</h3>
+      <label>Location<input name="location" value="{{ filters.get('location','') }}" placeholder="City, area or postcode"></label>
+      <label>Listing type<select name="listing_type"><option value="">Any</option><option value="Lease" {% if filters.get('listing_type')=='Lease' %}selected{% endif %}>For lease</option><option value="Sale" {% if filters.get('listing_type')=='Sale' %}selected{% endif %}>For sale</option></select></label>
+      <label>Property type<select name="property_type"><option value="">Any</option>{% for item in property_types %}<option {% if filters.get('property_type')==item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select></label>
+      <div class="two-col"><label>Min price<input type="number" name="min_price" value="{{ filters.get('min_price','') }}"></label><label>Max price<input type="number" name="max_price" value="{{ filters.get('max_price','') }}"></label></div>
+      <div class="two-col"><label>Min sq ft<input type="number" name="min_size" value="{{ filters.get('min_size','') }}"></label><label>Max sq ft<input type="number" name="max_size" value="{{ filters.get('max_size','') }}"></label></div>
+      <label>Parking spaces<input type="number" min="0" name="parking" value="{{ filters.get('parking','') }}"></label>
+      <label>Sort<select name="sort"><option value="newest">Newest listings</option><option value="price_low" {% if filters.get('sort')=='price_low' %}selected{% endif %}>Price low to high</option><option value="price_high" {% if filters.get('sort')=='price_high' %}selected{% endif %}>Price high to low</option><option value="size_large" {% if filters.get('sort')=='size_large' %}selected{% endif %}>Largest first</option></select></label>
+      <button class="btn primary full">Apply filters</button>
+      <a class="reset" href="{{ url_for('search') }}">Reset filters</a>
+    </form>
+  </aside>
+
+  <section class="results">
+    <div class="results-top"><strong>{{ properties|length }} properties found</strong></div>
+    {% if properties %}
+      <div class="property-grid">{% for p in properties %}{% include "_card.html" %}{% endfor %}</div>
+    {% else %}
+      <div class="empty"><h2>No properties found</h2><p>Try widening your search or removing a filter.</p></div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
