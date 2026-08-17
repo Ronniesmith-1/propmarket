@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}
+PropMarket — Commercial Property
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="container">
+        <div class="eyebrow">COMMERCIAL PROPERTY MARKETPLACE</div>
+
+        <h1>
+            Find the right space<br>
+            <span>for your business.</span>
+        </h1>
+
+        <p class="hero-text">
+            Search offices, warehouses, retail units, industrial space and more.
+        </p>
+
+        <form class="search-box"
+              action="{{ url_for('search') }}"
+              method="get">
+
+            <div class="field wide">
+                <label>Location</label>
+                <input name="location"
+                       placeholder="Town, city or postcode">
+            </div>
+
+            <div class="field">
+                <label>Listing</label>
+                <select name="listing_type">
+                    <option value="">Any</option>
+                    <option>Lease</option>
+                    <option>Sale</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Property type</label>
+                <select name="property_type">
+                    <option value="">Any type</option>
+                    {% for item in property_types %}
+                        <option>{{ item }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Min price</label>
+                <input type="number"
+                       name="min_price"
+                       placeholder="£">
+            </div>
+
+            <div class="field">
+                <label>Max price</label>
+                <input type="number"
+                       name="max_price"
+                       placeholder="£">
+            </div>
+
+            <button class="btn primary search-btn">
+                Search properties
+            </button>
+        </form>
+    </div>
+</section>
+
+<section class="section container">
+    <div class="section-heading">
+        <div>
+            <div class="eyebrow">HAND-PICKED</div>
+            <h2>Featured properties</h2>
+        </div>
+
+        <a class="text-link"
+           href="{{ url_for('search') }}">
+            View all →
+        </a>
+    </div>
+
+    <div class="property-grid">
+        {% for p in featured %}
+            {% include "_card.html" %}
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section soft">
+    <div class="container">
+        <div class="section-heading">
+            <div>
+                <div class="eyebrow">JUST ADDED</div>
+                <h2>Recently added</h2>
+            </div>
+        </div>
+
+        <div class="property-grid">
+            {% for p in recent %}
+                {% include "_card.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="cta container">
+    <div>
+        <div class="eyebrow">PROPERTY OWNERS & AGENTS</div>
+        <h2>Have a commercial property to let or sell?</h2>
+        <p>
+            Put your listing in front of businesses actively searching for space.
+        </p>
+    </div>
+
+    <a class="btn primary"
+       href="{{ url_for('advertise') }}">
+        Advertise your property
+    </a>
+</section>
+
+{% endblock %}

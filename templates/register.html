@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create account — PropMarket
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-page">
+
+    <div class="auth-card">
+
+        <div class="eyebrow">GET STARTED</div>
+
+        <h1>Create an account</h1>
+
+        <form method="post">
+
+            <label>
+                Name / company
+                <input name="name"
+                       required>
+            </label>
+
+            <label>
+                Email
+                <input type="email"
+                       name="email"
+                       required>
+            </label>
+
+            <label>
+                Password
+                <input type="password"
+                       name="password"
+                       minlength="6"
+                       required>
+            </label>
+
+            <label>
+                Account type
+                <select name="user_type">
+                    <option value="seeker">
+                        Property seeker
+                    </option>
+
+                    <option value="advertiser">
+                        Property advertiser
+                    </option>
+                </select>
+            </label>
+
+            <button class="btn primary full">
+                Create account
+            </button>
+
+        </form>
+
+        <p>
+            Already registered?
+            <a href="{{ url_for('login') }}">
+                Log in
+            </a>
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}
