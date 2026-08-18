@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}
+Chat about {{ conversation['title'] }} — PropMarket
+{% endblock %}
+
+{% block content %}
+
+<div class="container chat-page">
+
+    <div class="chat-header">
+
+        <div>
+            <div class="eyebrow">
+                PRIVATE PROPERTY CHAT
+            </div>
+
+            <h1>
+                {{ conversation['title'] }}
+            </h1>
+
+            <p>
+                Chatting with <strong>{{ other_name }}</strong>
+                · {{ conversation['city'] }},
+                {{ conversation['postcode'] }}
+            </p>
+        </div>
+
+        <a class="btn outline"
+           href="{{ url_for('property_detail', property_id=conversation['property_id']) }}">
+            View property
+        </a>
+
+    </div>
+
+    <div class="chat-shell">
+
+        <div class="chat-messages"
+             id="chat-messages">
+
+            {% for item in chat_messages %}
+
+                <div class="chat-message-row
+                            {% if item['sender_id'] == current_user['id'] %}
+                                mine
+                            {% else %}
+                                theirs
+                            {% endif %}">
+
+                    <div class="chat-message">
+
+                        <div class="chat-sender">
+                            {% if item['sender_id'] == current_user['id'] %}
+                                You
+                            {% else %}
+                                {{ item['sender_name'] }}
+                            {% endif %}
+                        </div>
+
+                        <div class="chat-text">
+                            {{ item['message'] }}
+                        </div>
+
+                        <div class="chat-time">
+                            {{ item['created_at']|datefmt }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <form class="chat-compose"
+              method="post">
+
+            <textarea
+                name="message"
+                rows="3"
+                maxlength="2000"
+                placeholder="Type a message..."
+                required
+            ></textarea>
+
+            <button class="btn primary">
+                Send
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const box = document.getElementById("chat-messages");
+
+    if (box) {
+        box.scrollTop = box.scrollHeight;
+    }
+});
+</script>
+
+{% endblock %}
