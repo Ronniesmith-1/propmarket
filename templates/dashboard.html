@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard — PropMarket
+{% endblock %}
+
+{% block content %}
+
+<div class="container dashboard">
+
+    <div class="dashboard-head">
+
+        <div>
+            <div class="eyebrow">ACCOUNT DASHBOARD</div>
+            <h1>Welcome, {{ current_user['name'] }}</h1>
+        </div>
+
+        <a class="btn primary"
+           href="{{ url_for('advertise') }}">
+            + Add property
+        </a>
+
+    </div>
+
+    <div class="stats">
+
+        <div>
+            <span>Active listings</span>
+            <strong>{{ listings|length }}</strong>
+        </div>
+
+        <div>
+            <span>Total views</span>
+            <strong>{{ listings|sum(attribute='views') }}</strong>
+        </div>
+
+        <div>
+            <span>Total saves</span>
+            <strong>{{ listings|sum(attribute='saved_count') }}</strong>
+        </div>
+
+    </div>
+
+    <section class="dashboard-section">
+
+        <h2>Your listings</h2>
+
+        {% if listings %}
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Views</th>
+                            <th>Saves</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for p in listings %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>{{ p['title'] }}</strong>
+                                    <br>
+                                    <span class="muted">
+                                        {{ p['city'] }} · {{ p['property_type'] }}
+                                    </span>
+                                </td>
+
+                                <td>{{ p['views'] }}</td>
+
+                                <td>{{ p['saved_count'] }}</td>
+
+                                <td>{{ p|property_price }}</td>
+
+                                <td class="actions">
+
+                                    <a href="{{ url_for('property_detail', property_id=p['id']) }}">
+                                        View
+                                    </a>
+
+                                    <a href="{{ url_for('edit_property', property_id=p['id']) }}">
+                                        Edit
+                                    </a>
+
+                                    <form method="post"
+                                          action="{{ url_for('delete_property', property_id=p['id']) }}"
+                                          onsubmit="return confirm('Delete this listing?')">
+
+                                        <button>
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+
+                <h2>No listings yet</h2>
+
+                <p>
+                    Advertise your first commercial property.
+                </p>
+
+                <a class="btn primary"
+                   href="{{ url_for('advertise') }}">
+                    Add property
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <section class="dashboard-section">
+
+        <h2>Saved properties</h2>
+
+        {% if favourites %}
+
+            <div class="property-grid">
+
+                {% for p in favourites %}
+                    {% include "_card.html" %}
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p class="muted">
+                You have not saved any properties yet.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+    
+
+
+  <section class="dashboard-section">
+
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow">MESSAGES</div>
+        <h2>Property chats</h2>
+      </div>
+    </div>
+
+    {% if conversations %}
+
+      <div class="conversation-list">
+
+        {% for chat in conversations %}
+
+          <a class="conversation-row"
+             href="{{ url_for('chat_conversation', conversation_id=chat['id']) }}">
+
+            <div class="conversation-property">
+              <strong>{{ chat['title'] }}</strong>
+              <span>{{ chat['property_type'] }}</span>
+            </div>
+
+            <div class="conversation-person">
+
+              {% if current_user['id'] == chat['advertiser_id'] %}
+                <span>From</span>
+                <strong>{{ chat['seeker_name'] }}</strong>
+              {% else %}
+                <span>Advertiser</span>
+                <strong>{{ chat['advertiser_name'] }}</strong>
+              {% endif %}
+
+            </div>
+
+            <div class="conversation-preview">
+              {{ chat['last_message']|truncate(80) if chat['last_message'] else 'Open conversation' }}
+            </div>
+
+            <div class="conversation-open">
+              Open chat →
+            </div>
+
+          </a>
+
+        {% endfor %}
+
+      </div>
+
+    {% else %}
+
+      <div class="empty small-empty">
+        <h3>No chats yet</h3>
+        <p>
+          Conversations about properties will appear here.
+        </p>
+      </div>
+
+    {% endif %}
+
+  </section>
+
+</div>
+
+{% endblock %}
